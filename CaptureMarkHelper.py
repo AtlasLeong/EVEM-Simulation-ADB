@@ -51,6 +51,7 @@ def createVar(varName, value, type):
         elif type == 4:
             f.write(varName + " = " + str(value) + "\n")
 
+
 def draw_Rect(event, x, y, flags, param):
     global drawing, startPos, stopPos
     if event == cv2.EVENT_LBUTTONDOWN:  # 响应鼠标按下
@@ -102,7 +103,8 @@ def draw_Point(event, x, y, flags, param):
     elif event == cv2.EVENT_RBUTTONUP:
         if startPos == (0, 0):
             return
-        res = tkinter.simpledialog.askstring(title="输入", prompt="请输入坐标 " + str(startPos) + " 变量名：", initialvalue="")
+        res = tkinter.simpledialog.askstring(title="输入", prompt="请输入坐标 " + str(startPos) + " 变量名：",
+                                             initialvalue="")
         if res is not None:
             if isVarExist(res):
                 tkinter.simpledialog.messagebox.showerror("错误", "该变量名已存在，请更换一个或手动去文件中删除！")
@@ -128,8 +130,9 @@ def draw_Line(event, x, y, flags, param):
     elif event == cv2.EVENT_RBUTTONUP:
         if startPos == (0, 0) and stopPos == (0, 0):
             return
-        res = tkinter.simpledialog.askstring(title="输入", prompt="请输入开始坐标 " + str(startPos) + " 到结束坐标 " + str(
-            stopPos) + " 组成向量的变量名：", initialvalue="")
+        res = tkinter.simpledialog.askstring(title="输入",
+                                             prompt="请输入开始坐标 " + str(startPos) + " 到结束坐标 " + str(
+                                                 stopPos) + " 组成向量的变量名：", initialvalue="")
         if res is not None:
             if isVarExist(res):
                 tkinter.simpledialog.messagebox.showerror("错误", "该变量名已存在，请更换一个或手动去文件中删除！")
@@ -173,6 +176,7 @@ def draw_Rect_Pos(event, x, y, flags, param):
         cropped = img_source[y0:y1, x0:x1]  # 裁剪坐标为[y0:y1, x0:x1]
         cv2.imshow('cropImage', cropped)
         cv2.waitKey(0)
+
 
 drawing = False
 startPos = (0, 0)

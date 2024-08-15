@@ -3,13 +3,63 @@ import RaphaelScriptHelper
 import testDict
 import cv2
 import numpy as np
-import pytesseract
+
+import random
+import os
+
 print(ADBHelper.getDevicesList())
 
 RaphaelScriptHelper.deviceID = "emulator-5554"
 RaphaelScriptHelper.deviceType = 1
 
 
+def click_open_AI_button():
+    x1, y1 = 832, 550
+    x2, y2 = 900, 620
+
+    random_x = random.randint(x1, x2)
+    random_y = random.randint(y1, y2)
+    random_pos = (random_x, random_y)
+    RaphaelScriptHelper.touch(random_pos)
+
+def check_if_open_AI():
+    # 使用较高的匹配精度
+    high_accuracy = 0.96
+
+    # 截取整个屏幕
+    RaphaelScriptHelper.ADBHelper.screenCapture(RaphaelScriptHelper.deviceID, "current_screen.png")
+
+    # 读取截图
+    img = cv2.imread("current_screen.png")
+
+    # 读取AI图标模板
+    ai_icon_template = cv2.imread(testDict.AI_Button, 0)  # 假设testDict中有ai_icon的路径
+
+    # 将截图转换为灰度图
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # 执行模板匹配
+    result = cv2.matchTemplate(gray, ai_icon_template, cv2.TM_CCOEFF_NORMED)
+
+    # 获取最佳匹配位置和相似度
+    min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+    if max_val >= high_accuracy:
+        print(f"检测到AI图标，匹配度: {max_val:.2f}")
+        return True
+    else:
+        print(f"未检测到AI图标，最高匹配度: {max_val:.2f}")
+        return False
+# check_if_open_AI()
+
+def is_in_station():
+    in_station = RaphaelScriptHelper.find_pic(testDict.out_station)
+    if in_station:
+        print('在空间站中')
+    else:
+        print('不在空间站内')
+
+is_in_station()
 def find_status_area(static_elements):
     all_positions = []
     for element in static_elements:
@@ -93,17 +143,14 @@ def safe_check(retry=True):
         print(f"当前为不安全状态 (匹配到 {match_count} 个0)")
         return False
 
-# 使用示例
-if safe_check():
-    print("可以继续执行后续操作")
-    RaphaelScriptHelper.find_pic_touch(testDict.out_station)
-
-    RaphaelScriptHelper.random_delay()
-else:
-    print("需要采取安全措施")
-
-
-
-
-
-
+# # 使用示例
+# if safe_check():
+#     print("可以继续执行后续操作")
+#     RaphaelScriptHelper.find_pic_touch(testDict.out_station)
+#
+#     RaphaelScriptHelper.random_delay()
+#
+#     RaphaelScriptHelper.delay(15)
+#     open_AI()
+# else:
+#     print("需要采取安全措施")
